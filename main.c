@@ -13,7 +13,7 @@ char *moving;
 // int dataA1, dataA2, dataA3, dataB1, dataB2, dataB3;
 
 int timeA1 = 22, timeA2 = 10, timeA3 = 30, timeB1 = 10, timeB2 = 15, timeB3 = 45;
-int dataA1 = 02, dataA2 = 10, dataA3 = 2024, dataB1 = 15, dataB2 = 05, dataB3 = 2004;
+int dataA1 = 02, dataA2 = 02, dataA3 = 2028, dataB1 = 15, dataB2 = 05, dataB3 = 2004;
 
 bool take_number1 = false,take_number2 = false, f_flag = false , sec_number_zero = false, isdigit_check_number1 = true, isdigit_check_number2 = true,otobrazh = false, del_flag = false;
 
@@ -106,16 +106,21 @@ int days_since_new_year(int day, int month, int year) {
 // Алгоритм для определения дня недели (воскресенье = 0, понедельник = 1, и т.д.)
 int get_day_of_week(int day, int month, int year) {
     // Алгоритм Зеллера
-    if (month < 3) {
-        month += 12;
+    if (month == 1) {
+        month = 13;
         year--;
     }
-    int K = year % 100;
-    int J = year / 100;
-    int f = day + (13 * (month + 1)) / 5 + K + K / 4 + J / 4 - 2 * J;
-    return (f + 7) % 7;
+    if (month == 2) {
+        month = 14;
+        year--;
+    }
+    int q = day;
+    int m = month;
+    int k = year % 100;
+    int j = year / 100;
+    int h = q + 13 * (m + 1) / 5 + k + k / 4 + j / 4 + 5 * j;
+    return h % 7;
 }
-
 
 // Рассчет количества секунд в промежутке времени
 void calculate_time_difference(int h1, int m1, int s1, int h2, int m2, int s2, int *hours, int *minutes, int *seconds) {
@@ -123,7 +128,7 @@ void calculate_time_difference(int h1, int m1, int s1, int h2, int m2, int s2, i
     int total_seconds2 = h2 * 3600 + m2 * 60 + s2;
     int total_diff = abs(total_seconds1 - total_seconds2);
 
-    *hours = total_diff / 3600;
+    *hours =( total_diff / 3600) + 1;
     *minutes = (total_diff % 3600) / 60;
     *seconds = total_diff % 60;
 }
@@ -148,7 +153,7 @@ void calculate_date_difference(int d1, int m1, int y1, int h1, int min1, int s1,
     for (int year = y1 - 1; year >= y2; year--) {
         total_days1 += 365 + is_leap_year(year);
     }
-    total_days1 += days_since_new_year(d1, m1, y1) - days_since_new_year(d2, m2, y2);
+    total_days1 += days_since_new_year(d1, m1, y1) - days_since_new_year(d2, m2, y2) - 2;
 
     // Рассчет разницы во времени
     int hours, minutes, seconds;
@@ -325,7 +330,7 @@ int main() {
                                       dataB1, dataB2, dataB3, timeB1, timeB2, timeB3);
 
             // Определение дня недели для первой и второй даты
-            char *days_of_week[] = {"Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"};
+            char *days_of_week[] = {"Суббота", "Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница"};
             int dow1 = get_day_of_week(dataA1, dataA2, dataA3);
             int dow2 = get_day_of_week(dataB1, dataB2, dataB3);
 
