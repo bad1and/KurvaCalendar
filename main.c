@@ -15,6 +15,9 @@ char *moving;
 int timeA1 = 22, timeA2 = 10, timeA3 = 30, timeB1 = 10, timeB2 = 15, timeB3 = 45;
 int dataA1 = 02, dataA2 = 02, dataA3 = 2028, dataB1 = 15, dataB2 = 05, dataB3 = 2004;
 
+int plus_data;
+int plus_time_h, plus_time_m, plus_time_s;
+
 bool take_number1 = false,take_number2 = false, f_flag = false , sec_number_zero = false, isdigit_check_number1 = true, isdigit_check_number2 = true,otobrazh = false, del_flag = false;
 
 
@@ -57,6 +60,10 @@ void Calc() {
         //     printw("%s" , "Число А не введено!\n");
         // }
 
+        // if (i==11) {
+        //     printw("%d",plus_data);
+        // }
+
 
         // if (i == 11 && isdigit_check_number2 == false) {
         //     printw("%s", "В переменную Б вы ввели не число!\n");
@@ -77,11 +84,28 @@ void Calc() {
     }
 }
 
+////pizdets bag!!!!!!
+int is_leap_year_6(int year) {
+    if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) {
+        return 1;
+    }
+    return 0;
+}
+
 int is_leap_year(int year) {
     if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) {
         return 1;
     }
     return 0;
+}
+
+////pizdets bag!!!!!!
+int days_in_month_6(int month, int year) {
+    int days_in_months[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    if (month == 2 && is_leap_year_6(year)) {
+        return 29; // Февраль в високосный год
+    }
+    return days_in_months[month - 1];
 }
 
 // Количество дней в каждом месяце
@@ -121,6 +145,7 @@ int get_day_of_week(int day, int month, int year) {
     int h = q + 13 * (m + 1) / 5 + k + k / 4 + j / 4 + 5 * j;
     return h % 7;
 }
+
 
 // Рассчет количества секунд в промежутке времени
 void calculate_time_difference(int h1, int m1, int s1, int h2, int m2, int s2, int *hours, int *minutes, int *seconds) {
@@ -162,6 +187,53 @@ void calculate_date_difference(int d1, int m1, int y1, int h1, int min1, int s1,
     printw("Прошло: %d дней %d часов %d минут %d секунд\n", total_days1, hours, minutes, seconds);
 }
 
+//////////////доп время к 1 времени
+void first_time_plus_dop_time(int h1, int min1, int s1,
+                             int h2, int min2, int s2) {
+    int total_hours = h1+h2;
+    int total_minutes = min1 + min2;
+    int total_seconds = s1 + s2;
+    int total_days = 0;
+
+    while (total_hours >= 24) {
+        total_hours -= 24;
+        total_days++;
+    }
+    while (total_minutes >= 60) {
+        total_minutes -= 60;
+    }
+    while (total_seconds >= 60) {
+        total_seconds -= 60;
+    }
+    printw("Прошло: %d дней %d часов %d минут %d секунд\n\n",total_days,total_hours,total_minutes,total_seconds);
+}
+
+
+///////////// для 6 шага + к дням
+void calculate_date_difference_to_6step(int *day, int *month, int *year, int daysToAdd) {
+    while (daysToAdd > 0) {
+        int daysInCurrentMonth = days_in_month_6(*month, *year);
+
+        // Если оставшихся дней больше, чем осталось в текущем месяце
+        if (daysToAdd + *day > daysInCurrentMonth) {
+            daysToAdd -= (daysInCurrentMonth - *day + 1);
+            *day = 1;
+            (*month)++;
+
+            // Переход на следующий год
+            if (*month > 12) {
+                *month = 1;
+                (*year)++;
+            }
+        } else {
+            *day += daysToAdd;
+            daysToAdd = 0;
+        }
+    }
+    printw("Новая дата: %02d.%02d.%d\n\n", *day, *month, *year);
+}
+
+
 
 int main() {
     setlocale(LC_ALL, "");
@@ -194,7 +266,7 @@ int main() {
 
 
         // 49 - 55; 1 - 7
-        //Enter time A
+        //1 - Enter time A
         if ((position == 0 && n_button == 10) || n_button == 49) {
             clear();
             otobrazh = false;
@@ -226,7 +298,7 @@ int main() {
 
         }
 
-        //Enter data A
+        //2 - Enter data A
         if ((position == 1 && n_button == 10) || n_button == 50) {
             clear();
             otobrazh = false;
@@ -257,7 +329,7 @@ int main() {
 
         }
 
-        //Enter time B
+        //3 - Enter time B
         if ((position == 2 && n_button == 10) || n_button == 51) {
             clear();
             otobrazh = false;
@@ -288,7 +360,7 @@ int main() {
             Calc(position);
         }
 
-        //Enter data B
+        //4 - Enter data B
         if ((position == 3 && n_button == 10) || n_button == 52) {
             clear();
             otobrazh = false;
@@ -319,9 +391,9 @@ int main() {
             Calc(position);
         }
 
+////////////////
 
-
-        //Rez 1-4p
+        //5 - Rez 1-4p
         if ((position == 4 && n_button == 10) || n_button == 53) {
             clear();
 
@@ -345,35 +417,103 @@ int main() {
             }
         }
 
-        //+ to 1 data
+
+        //6 - + to 1 data
         if ((position == 5 && n_button == 10) || n_button == 54) {
+            clear();
+
+            printw("%s", "Введите сколько дней вы хотите добавить к первой дате: ");
+            scanw("%d",&plus_data);
+
             clear();
             position = 5;
             Calc(position);
         }
 
-        //rez p6
+        //7 - rez p6
         if ((position == 6 && n_button == 10) || n_button == 55) {
             clear();
-            position = 6;
-            Calc(position);
+
+            printw("Первая дата: %02d.%02d.%d\n",dataA1,dataA2,dataA3);
+            printw("Сколько дней прибавить: %d\n",plus_data);
+            // Рассчет разницы между датами
+            calculate_date_difference_to_6step(&dataA1, &dataA2, &dataA3, plus_data);
+
+            printw("%s", "Для выхода в главное меню нажмите любую кнопку...\n");
+            n_button = getch();
+            if (n_button != 27) {
+                clear();
+                position = 6;
+                Calc(position);
+            }
         }
 
-        //+ to 1 time
-        if ((position == 7 && n_button == 10) || n_button == 56 || n_button == 27) {
+
+        //8 - + to 1 time
+        if ((position == 7 && n_button == 10) || n_button == 56) {
             clear();
-            position = 7;
-            Calc(position);
+            otobrazh = false;
+
+            printw("%s", "Введите сколько прибавить к 1 времени (ч:м:с): ");
+
+            otobrazh = true;
+
+            char input[100];
+
+            scanw("%s",input, sizeof(input), stdin);
+            if (input[0] != '\0') {
+                input[strcspn(input, "\n")] = 0;
+
+                char *ctimeB1 = strtok(input, ":");
+                plus_time_h = atoi(ctimeB1);
+                char *ctimeB2 = strtok(NULL, ":");
+                plus_time_m = atoi(ctimeB2);
+                char *ctimeB3 = strtok(NULL, ":");
+                plus_time_s = atoi(ctimeB3);
+
+                clear();
+                position = 7;
+                Calc(position);
+            }
+            else {
+                plus_time_h = 0;
+                plus_time_m = 0;
+                plus_time_s = 0;
+                clear();
+                position = 7;
+                Calc(position);
+            }
+
+
+
+
+            // clear();
+            // position = 7;
+            // Calc(position);
         }
 
-        //rez p8
-        if ((position == 8 && n_button == 10) || n_button == 57 || n_button == 27) {
+        //9 - rez p8
+        if ((position == 8 && n_button == 10) || n_button == 57) {
             clear();
-            position = 8;
-            Calc(position);
+
+            printw("Первое время: %02d:%02d:%02d\n", timeA1, timeA2, timeA3);
+            printw("Доп время: %02d:%02d:%02d\n", plus_time_h, plus_time_m, plus_time_s);
+
+            first_time_plus_dop_time(timeA1, timeA2, timeA3,
+                                        plus_time_h,plus_time_m,plus_time_s);
+
+            printw("%s", "Для выхода в главное меню нажмите любую кнопку...\n");
+
+            n_button = getch();
+            if (n_button != 27) {
+                clear();
+                position = 8;
+                Calc(position);
+            }
         }
 
-        //intruction
+
+        //10 - intruction
         if (position == 9 && n_button == 10) {
             clear();
             position = 9;
@@ -392,8 +532,8 @@ int main() {
         }
 
 
-        //exit
-        if ((position == 10 && n_button == 10) || n_button == 27) {
+        //11 - exit
+        if ((position == 10 && n_button == 10) || n_button == 56 || n_button == 27) {
             break;
         }
 
