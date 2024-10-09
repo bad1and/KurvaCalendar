@@ -1,7 +1,6 @@
 #include <ncurses.h>
 #include <locale.h>
 #include <unistd.h>
-#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -84,7 +83,7 @@ void Calc() {
     }
 }
 
-////pizdets bag!!!!!!
+////
 int is_leap_year_6(int year) {
     if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) {
         return 1;
@@ -174,11 +173,19 @@ void calculate_date_difference(int d1, int m1, int y1, int h1, int min1, int s1,
     }
 
     // Рассчет разницы в днях
-    int total_days1 = d1;
-    for (int year = y1 - 1; year >= y2; year--) {
-        total_days1 += 365 + is_leap_year(year);
+    int total_days1 = 0;
+    if (y1 == y2) {
+        // Если год один и тот же, просто вычитаем дни
+        total_days1 = days_since_new_year(d1, m1, y1) - days_since_new_year(d2, m2, y2);
+    } else {
+        // Если год отличается, сначала считаем дни до конца года первой даты
+        total_days1 += 365 + is_leap_year(y2) - days_since_new_year(d2, m2, y2); // Дни с начала года до второй даты
+        total_days1 += days_since_new_year(d1, m1, y1); // Дни от начала года до первой даты
+        // Добавляем дни для промежуточных лет
+        for (int year = y2 + 1; year < y1; ++year) {
+            total_days1 += 365 + is_leap_year(year);
+        }
     }
-    total_days1 += days_since_new_year(d1, m1, y1) - days_since_new_year(d2, m2, y2) - 2;
 
     // Рассчет разницы во времени
     int hours, minutes, seconds;
@@ -232,7 +239,6 @@ void calculate_date_difference_to_6step(int *day, int *month, int *year, int day
     }
     printw("Новая дата: %02d.%02d.%d\n\n", *day, *month, *year);
 }
-
 
 
 int main() {
@@ -290,7 +296,6 @@ int main() {
             timeA2 = atoi(ctimeA2);
             char *ctimeA3 = strtok(NULL, ":");
             timeA3 = atoi(ctimeA3);
-
 
             clear();
             position = 0;
@@ -365,7 +370,7 @@ int main() {
             clear();
             otobrazh = false;
 
-            printw("%s", "Введите дату Б (ч:м:с): ");
+            printw("%s", "Введите дату Б (д.м.г): ");
 
             otobrazh = true;
 
