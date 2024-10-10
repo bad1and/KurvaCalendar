@@ -8,14 +8,13 @@ int n_button, itog;
 int position = 0;
 char *moving;
 
-// int timeA1, timeA2, timeA3, timeB1, timeB2, timeB3;
-// int dataA1, dataA2, dataA3, dataB1, dataB2, dataB3;
+int timeA1, timeA2, timeA3, timeB1, timeB2, timeB3;
+int dataA1, dataA2, dataA3, dataB1, dataB2, dataB3;
 
-int timeA1 = 22, timeA2 = 10, timeA3 = 30, timeB1 = 10, timeB2 = 15, timeB3 = 45;
-int dataA1 = 02, dataA2 = 02, dataA3 = 2028, dataB1 = 15, dataB2 = 05, dataB3 = 2004;
+// int timeA1 = 22, timeA2 = 10, timeA3 = 30, timeB1 = 10, timeB2 = 15, timeB3 = 45;
+// int dataA1 = 02, dataA2 = 02, dataA3 = 2028, dataB1 = 15, dataB2 = 05, dataB3 = 2004;
 
-int plus_data;
-int plus_time_h, plus_time_m, plus_time_s;
+int plus_data,plus_time_h, plus_time_m, plus_time_s;
 
 bool take_number1 = false,take_number2 = false, f_flag = false , sec_number_zero = false, isdigit_check_number1 = true, isdigit_check_number2 = true,otobrazh = false, del_flag = false;
 
@@ -83,7 +82,7 @@ void Calc() {
     }
 }
 
-////
+////Високоска для 6п
 int is_leap_year_6(int year) {
     if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) {
         return 1;
@@ -91,6 +90,7 @@ int is_leap_year_6(int year) {
     return 0;
 }
 
+//Вискоска
 int is_leap_year(int year) {
     if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) {
         return 1;
@@ -98,7 +98,7 @@ int is_leap_year(int year) {
     return 0;
 }
 
-////pizdets bag!!!!!!
+//Дней в месяцах
 int days_in_month_6(int month, int year) {
     int days_in_months[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
     if (month == 2 && is_leap_year_6(year)) {
@@ -107,7 +107,7 @@ int days_in_month_6(int month, int year) {
     return days_in_months[month - 1];
 }
 
-// Количество дней в каждом месяце
+//Дней в каждом месяце
 int days_in_month(int month, int year) {
     int days_in_months[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
     if (month == 2 && is_leap_year(year)) {
@@ -116,7 +116,7 @@ int days_in_month(int month, int year) {
     return days_in_months[month - 1];
 }
 
-// Количество дней от 1 января до данной даты в том же году
+//Дней от 01.01 до  даты в это году
 int days_since_new_year(int day, int month, int year) {
     int total_days = 0;
     for (int m = 1; m < month; m++) {
@@ -126,9 +126,8 @@ int days_since_new_year(int day, int month, int year) {
     return total_days;
 }
 
-// Алгоритм для определения дня недели (воскресенье = 0, понедельник = 1, и т.д.)
+//День недели - Зеллер
 int get_day_of_week(int day, int month, int year) {
-    // Алгоритм Зеллера
     if (month == 1) {
         month = 13;
         year--;
@@ -146,18 +145,24 @@ int get_day_of_week(int day, int month, int year) {
 }
 
 
-// Рассчет количества секунд в промежутке времени
+//Расчет секунд всего вр
 void calculate_time_difference(int h1, int m1, int s1, int h2, int m2, int s2, int *hours, int *minutes, int *seconds) {
     int total_seconds1 = h1 * 3600 + m1 * 60 + s1;
     int total_seconds2 = h2 * 3600 + m2 * 60 + s2;
     int total_diff = abs(total_seconds1 - total_seconds2);
 
-    *hours =( total_diff / 3600) + 1;
+    if (total_diff / 3600 == 0) {
+        *hours = 0;
+    }
+    else {
+        *hours =( total_diff / 3600) + 1;
+    }
+
     *minutes = (total_diff % 3600) / 60;
     *seconds = total_diff % 60;
 }
 
-// Рассчет разницы в днях, часах, минутах и секундах между двумя датами
+//Обмен б и м даты
 void calculate_date_difference(int d1, int m1, int y1, int h1, int min1, int s1,
                                int d2, int m2, int y2, int h2, int min2, int s2) {
     // Упорядочим даты, чтобы первая была больше второй
@@ -194,7 +199,7 @@ void calculate_date_difference(int d1, int m1, int y1, int h1, int min1, int s1,
     printw("Прошло: %d дней %d часов %d минут %d секунд\n", total_days1, hours, minutes, seconds);
 }
 
-//////////////доп время к 1 времени
+//доп время к 1 времени
 void first_time_plus_dop_time(int h1, int min1, int s1,
                              int h2, int min2, int s2) {
     int total_hours = h1+h2;
@@ -216,7 +221,7 @@ void first_time_plus_dop_time(int h1, int min1, int s1,
 }
 
 
-///////////// для 6 шага + к дням
+//для 6 шага + к дням
 void calculate_date_difference_to_6step(int *day, int *month, int *year, int daysToAdd) {
     while (daysToAdd > 0) {
         int daysInCurrentMonth = days_in_month_6(*month, *year);
@@ -237,7 +242,7 @@ void calculate_date_difference_to_6step(int *day, int *month, int *year, int day
             daysToAdd = 0;
         }
     }
-    printw("Новая дата: %02d.%02d.%d\n\n", *day, *month, *year);
+    printw("Новая дата: %02d.%02d.%02d\n\n", *day, *month, *year);
 }
 
 
@@ -276,7 +281,7 @@ int main() {
         if ((position == 0 && n_button == 10) || n_button == 49) {
             clear();
             otobrazh = false;
-            printw("%s", "Введите время А (ч:м:с): ");
+            printw("%s", "Введите время А (Ч:М:С): ");
             otobrazh = true;
 
             bool isNumber1 = true;
@@ -291,11 +296,20 @@ int main() {
             input[strcspn(input, "\n")] = 0;
 
             char *ctimeA1 = strtok(input, ":");
-            timeA1 = atoi(ctimeA1);
             char *ctimeA2 = strtok(NULL, ":");
-            timeA2 = atoi(ctimeA2);
             char *ctimeA3 = strtok(NULL, ":");
+
+
+            if (ctimeA1 == NULL || ctimeA2 == NULL || ctimeA3 == NULL) {
+                ctimeA1 = "0";
+                ctimeA2 = "0";
+                ctimeA3 = "0";
+            }
+
+            timeA1 = atoi(ctimeA1);
+            timeA2 = atoi(ctimeA2);
             timeA3 = atoi(ctimeA3);
+
 
             clear();
             position = 0;
@@ -307,7 +321,7 @@ int main() {
         if ((position == 1 && n_button == 10) || n_button == 50) {
             clear();
             otobrazh = false;
-            printw("%s", "Введите дату А (д.м.г): ");
+            printw("%s", "Введите дату А (Д.М.Г (01.01.2020)): ");
             otobrazh = true;
 
             bool isNumber1 = true;
@@ -322,10 +336,17 @@ int main() {
             input[strcspn(input, "\n")] = 0;
 
             char *cdataA1 = strtok(input, ".");
-            dataA1 = atoi(cdataA1);
             char *cdataA2 = strtok(NULL, ".");
-            dataA2 = atoi(cdataA2);
             char *cdataA3 = strtok(NULL, ".");
+
+            if (cdataA1 == NULL || cdataA2 == NULL || cdataA3 == NULL) {
+                cdataA1 = "0";
+                cdataA2 = "0";
+                cdataA3 = "0";
+            }
+
+            dataA1 = atoi(cdataA1);
+            dataA2 = atoi(cdataA2);
             dataA3 = atoi(cdataA3);
 
             clear();
@@ -339,7 +360,7 @@ int main() {
             clear();
             otobrazh = false;
 
-            printw("%s", "Введите время Б (ч:м:с): ");
+            printw("%s", "Введите время Б (Ч:М:С): ");
 
             otobrazh = true;
 
@@ -353,12 +374,19 @@ int main() {
             input[strcspn(input, "\n")] = 0;
 
             char *ctimeB1 = strtok(input, ":");
-            timeB1 = atoi(ctimeB1);
             char *ctimeB2 = strtok(NULL, ":");
-            timeB2 = atoi(ctimeB2);
             char *ctimeB3 = strtok(NULL, ":");
-            timeB3 = atoi(ctimeB3);
 
+
+            if (ctimeB1 == NULL || ctimeB2 == NULL || ctimeB3 == NULL) {
+                ctimeB1 = "0";
+                ctimeB2 = "0";
+                ctimeB3 = "0";
+            }
+
+            timeB1 = atoi(ctimeB1);
+            timeB2 = atoi(ctimeB2);
+            timeB3 = atoi(ctimeB3);
 
             clear();
             position = 2;
@@ -370,7 +398,7 @@ int main() {
             clear();
             otobrazh = false;
 
-            printw("%s", "Введите дату Б (д.м.г): ");
+            printw("%s", "Введите дату Б (Д.М.Г (01.01.2020)): ");
 
             otobrazh = true;
 
@@ -384,12 +412,18 @@ int main() {
             input[strcspn(input, "\n")] = 0;
 
             char *cdataB1 = strtok(input, ".");
-            dataB1 = atoi(cdataB1);
             char *cdataB2 = strtok(NULL, ".");
-            dataB2 = atoi(cdataB2);
             char *cdataB3 = strtok(NULL, ".");
-            dataB3 = atoi(cdataB3);
 
+            if (cdataB1 == NULL || cdataB2 == NULL || cdataB3 == NULL) {
+                cdataB1 = "0";
+                cdataB2 = "0";
+                cdataB3 = "0";
+            }
+
+            dataB1 = atoi(cdataB1);
+            dataB2 = atoi(cdataB2);
+            dataB3 = atoi(cdataB3);
 
             clear();
             position = 3;
@@ -439,7 +473,7 @@ int main() {
         if ((position == 6 && n_button == 10) || n_button == 55) {
             clear();
 
-            printw("Первая дата: %02d.%02d.%d\n",dataA1,dataA2,dataA3);
+            printw("Первая дата: %02d.%02d.%02d\n",dataA1,dataA2,dataA3);
             printw("Сколько дней прибавить: %d\n",plus_data);
             // Рассчет разницы между датами
             calculate_date_difference_to_6step(&dataA1, &dataA2, &dataA3, plus_data);
@@ -459,50 +493,41 @@ int main() {
             clear();
             otobrazh = false;
 
-            printw("%s", "Введите сколько прибавить к 1 времени (ч:м:с): ");
+            printw("%s", "Введите сколько прибавить к 1 времени (Ч:М:С): ");
 
             otobrazh = true;
 
             char input[100];
 
             scanw("%s",input, sizeof(input), stdin);
-            if (input[0] != '\0') {
-                input[strcspn(input, "\n")] = 0;
+            input[strcspn(input, "\n")] = 0;
 
-                char *ctimeB1 = strtok(input, ":");
-                plus_time_h = atoi(ctimeB1);
-                char *ctimeB2 = strtok(NULL, ":");
-                plus_time_m = atoi(ctimeB2);
-                char *ctimeB3 = strtok(NULL, ":");
-                plus_time_s = atoi(ctimeB3);
+            char *cplus_time1 = strtok(input, ":");
+            char *cplus_time2 = strtok(NULL, ":");
+            char *cplus_time3 = strtok(NULL, ":");
 
-                clear();
-                position = 7;
-                Calc(position);
-            }
-            else {
-                plus_time_h = 0;
-                plus_time_m = 0;
-                plus_time_s = 0;
-                clear();
-                position = 7;
-                Calc(position);
+            if (cplus_time1 == NULL || cplus_time2 == NULL || cplus_time3 == NULL) {
+                cplus_time1 = "0";
+                cplus_time2 = "0";
+                cplus_time3 = "0";
             }
 
+            plus_time_h = atoi(cplus_time1);
+            plus_time_m = atoi(cplus_time2);
+            plus_time_s = atoi(cplus_time3);
 
-
-
-            // clear();
-            // position = 7;
-            // Calc(position);
+            clear();
+            position = 7;
+            Calc(position);
         }
+
 
         //9 - rez p8
         if ((position == 8 && n_button == 10) || n_button == 57) {
             clear();
 
             printw("Первое время: %02d:%02d:%02d\n", timeA1, timeA2, timeA3);
-            printw("Доп время: %02d:%02d:%02d\n", plus_time_h, plus_time_m, plus_time_s);
+            printw("Сколько времени прибавить: %02d:%02d:%02d\n", plus_time_h, plus_time_m, plus_time_s);
 
             first_time_plus_dop_time(timeA1, timeA2, timeA3,
                                         plus_time_h,plus_time_m,plus_time_s);
@@ -528,7 +553,7 @@ int main() {
             printw("%s", "\n");
             printw("%s", "https://github.com/bad1and/KurvaCalendar\n");
             printw("%s", "\n");
-            printw("%s", "Tyt budet instruction.\n");
+            printw("%s", "Tyt budet instruction...)\n");
             n_button = getch();
             if (n_button != 27) {
                 clear();
@@ -538,7 +563,7 @@ int main() {
 
 
         //11 - exit
-        if ((position == 10 && n_button == 10) || n_button == 56 || n_button == 27) {
+        if ((position == 10 && n_button == 10) || n_button == 27) {
             break;
         }
 
