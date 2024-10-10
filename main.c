@@ -1,22 +1,26 @@
+#include <ctype.h>
 #include <ncurses.h>
 #include <locale.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 
-int n_button, itog;
+int n_button;
 int position = 0;
 char *moving;
 
 int timeA1, timeA2, timeA3, timeB1, timeB2, timeB3;
 int dataA1, dataA2, dataA3, dataB1, dataB2, dataB3;
+int plus_data,plus_time_h, plus_time_m, plus_time_s;
+
+bool is_first_button = true,is_second_button= true, is_third_button= true, is_foth_button= true, is_6p_normal= true, is_8p_normal = true;
 
 // int timeA1 = 22, timeA2 = 10, timeA3 = 30, timeB1 = 10, timeB2 = 15, timeB3 = 45;
 // int dataA1 = 02, dataA2 = 02, dataA3 = 2028, dataB1 = 15, dataB2 = 05, dataB3 = 2004;
 
-int plus_data,plus_time_h, plus_time_m, plus_time_s;
 
-bool take_number1 = false,take_number2 = false, f_flag = false , sec_number_zero = false, isdigit_check_number1 = true, isdigit_check_number2 = true,otobrazh = false, del_flag = false;
+
+// bool take_number1 = false,take_number2 = false, f_flag = false , sec_number_zero = false, isdigit_check_number1 = true, isdigit_check_number2 = true,otobrazh = false, del_flag = false;
 
 
 void Calc() {
@@ -51,9 +55,24 @@ void Calc() {
         }
 
             // Check for debil
-        // if (i == 11 && isdigit_check_number1 == false) {
-        //     printw("%s", "В переменную А вы ввели не число!\n");
-        // }
+        if (i == 11 && is_first_button == false) {
+            printw("%s", "В время А вы ввели что-то не то!\n");
+        }
+        if (i == 11 && is_second_button == false) {
+            printw("%s", "В дату А вы ввели что-то не то!\n");
+        }
+        if (i == 11 && is_third_button == false) {
+            printw("%s", "В время Б вы ввели что-то не то!\n");
+        }
+        if (i == 11 && is_foth_button == false) {
+            printw("%s", "В дату А вы ввели что-то не то!\n");
+        }
+        if (i == 11 && is_6p_normal == false) {
+            printw("%s", "Добавленные числа доп даты какие-то не такие!\n");
+        }
+        if (i == 11 && is_8p_normal == false) {
+            printw("%s", "Добавленные числа доп времени какие-то не такие!\n");
+        }
         // else if (i == 11 && take_number1 == false) {
         //     printw("%s" , "Число А не введено!\n");
         // }
@@ -116,7 +135,7 @@ int days_in_month(int month, int year) {
     return days_in_months[month - 1];
 }
 
-//Дней от 01.01 до  даты в это году
+//Дней от 01.01 до даты в это году
 int days_since_new_year(int day, int month, int year) {
     int total_days = 0;
     for (int m = 1; m < month; m++) {
@@ -143,7 +162,6 @@ int get_day_of_week(int day, int month, int year) {
     int h = q + 13 * (m + 1) / 5 + k + k / 4 + j / 4 + 5 * j;
     return h % 7;
 }
-
 
 //Расчет секунд всего вр
 void calculate_time_difference(int h1, int m1, int s1, int h2, int m2, int s2, int *hours, int *minutes, int *seconds) {
@@ -220,7 +238,6 @@ void first_time_plus_dop_time(int h1, int min1, int s1,
     printw("Прошло: %d дней %d часов %d минут %d секунд\n\n",total_days,total_hours,total_minutes,total_seconds);
 }
 
-
 //для 6 шага + к дням
 void calculate_date_difference_to_6step(int *day, int *month, int *year, int daysToAdd) {
     while (daysToAdd > 0) {
@@ -280,35 +297,58 @@ int main() {
         //1 - Enter time A
         if ((position == 0 && n_button == 10) || n_button == 49) {
             clear();
-            otobrazh = false;
-            printw("%s", "Введите время А (Ч:М:С): ");
-            otobrazh = true;
 
-            bool isNumber1 = true;
-            isdigit_check_number1 = true;
-            take_number1 = true;
+            printw("%s", "Введите время А (Ч:М:С): ");
+
 
             //Разделение по двоеточию
             char input[100];
+            int x = 0;
 
 
             scanw("%s",input, sizeof(input), stdin);
-            input[strcspn(input, "\n")] = 0;
 
-            char *ctimeA1 = strtok(input, ":");
-            char *ctimeA2 = strtok(NULL, ":");
-            char *ctimeA3 = strtok(NULL, ":");
+            while (input[x] != '\0') {
+                if (!isdigit(input[x]) && input[x] != ':') {
+                    is_first_button = false;
+                    timeA1 = 0;
+                    timeA2 = 0;
+                    timeA3 = 0;
+                    break;
+                } else {
+                    is_first_button = true;
+                    x = x + 1;
+                }
 
-
-            if (ctimeA1 == NULL || ctimeA2 == NULL || ctimeA3 == NULL) {
-                ctimeA1 = "0";
-                ctimeA2 = "0";
-                ctimeA3 = "0";
             }
 
-            timeA1 = atoi(ctimeA1);
-            timeA2 = atoi(ctimeA2);
-            timeA3 = atoi(ctimeA3);
+            if (is_first_button) {
+                input[strcspn(input, "\n")] = 0;
+                char *ctimeA1 = strtok(input, ":");
+                char *ctimeA2 = strtok(NULL, ":");
+                char *ctimeA3 = strtok(NULL, ":");
+
+                if (ctimeA1 == NULL || ctimeA2 == NULL || ctimeA3 == NULL) {
+                    ctimeA1 = "0";
+                    ctimeA2 = "0";
+                    ctimeA3 = "0";
+                }
+
+                timeA1 = atoi(ctimeA1);
+                timeA2 = atoi(ctimeA2);
+                timeA3 = atoi(ctimeA3);
+
+                if (timeA1 <= 23 && timeA2 <= 59 && timeA3 <= 59) {
+                    is_first_button = true;
+                }else {
+                    is_first_button = false;
+                    timeA1 = 0;
+                    timeA2 = 0;
+                    timeA3 = 0;
+                }
+            } else {
+                is_first_button = false;
+            }
 
 
             clear();
@@ -320,34 +360,57 @@ int main() {
         //2 - Enter data A
         if ((position == 1 && n_button == 10) || n_button == 50) {
             clear();
-            otobrazh = false;
             printw("%s", "Введите дату А (Д.М.Г (01.01.2020)): ");
-            otobrazh = true;
 
-            bool isNumber1 = true;
-            isdigit_check_number1 = true;
-            take_number1 = true;
+
 
             //Разделение по двоеточию
             char input[100];
-
+            int x = 0;
 
             scanw("%s",input, sizeof(input), stdin);
-            input[strcspn(input, "\n")] = 0;
 
-            char *cdataA1 = strtok(input, ".");
-            char *cdataA2 = strtok(NULL, ".");
-            char *cdataA3 = strtok(NULL, ".");
-
-            if (cdataA1 == NULL || cdataA2 == NULL || cdataA3 == NULL) {
-                cdataA1 = "0";
-                cdataA2 = "0";
-                cdataA3 = "0";
+            while (input[x] != '\0') {
+                if (!isdigit(input[x]) && input[x] != '.') {
+                    is_second_button = false;
+                    dataA1 = 0;
+                    dataA2 = 0;
+                    dataA3 = 0;
+                    break;
+                } else {
+                    is_second_button = true;
+                    x = x + 1;
+                }
             }
 
-            dataA1 = atoi(cdataA1);
-            dataA2 = atoi(cdataA2);
-            dataA3 = atoi(cdataA3);
+
+            if (is_second_button) {
+                input[strcspn(input, "\n")] = 0;
+                char *cdataA1 = strtok(input, ".");
+                char *cdataA2 = strtok(NULL, ".");
+                char *cdataA3 = strtok(NULL, ".");
+
+                if (cdataA1 == NULL || cdataA2 == NULL || cdataA3 == NULL) {
+                    cdataA1 = "0";
+                    cdataA2 = "0";
+                    cdataA3 = "0";
+                }
+
+                dataA1 = atoi(cdataA1);
+                dataA2 = atoi(cdataA2);
+                dataA3 = atoi(cdataA3);
+
+                if (dataA1 <= 31 && dataA2 <= 12 && (1930<=dataA3 && dataA3 <= 2300)) {
+                    is_second_button = true;
+                }else {
+                    is_second_button = false;
+                    dataA1 = 0;
+                    dataA2 = 0;
+                    dataA3 = 0;
+                }
+            } else {
+                is_second_button = false;
+            }
 
             clear();
             position = 1;
@@ -358,35 +421,57 @@ int main() {
         //3 - Enter time B
         if ((position == 2 && n_button == 10) || n_button == 51) {
             clear();
-            otobrazh = false;
 
             printw("%s", "Введите время Б (Ч:М:С): ");
 
-            otobrazh = true;
 
-            bool isNumber2 = true;
-            isdigit_check_number2 = true;
-            take_number2 = true;
             char input[100];
+            int x = 0;
 
 
             scanw("%s",input, sizeof(input), stdin);
-            input[strcspn(input, "\n")] = 0;
 
-            char *ctimeB1 = strtok(input, ":");
-            char *ctimeB2 = strtok(NULL, ":");
-            char *ctimeB3 = strtok(NULL, ":");
-
-
-            if (ctimeB1 == NULL || ctimeB2 == NULL || ctimeB3 == NULL) {
-                ctimeB1 = "0";
-                ctimeB2 = "0";
-                ctimeB3 = "0";
+            while (input[x] != '\0') {
+                if (!isdigit(input[x]) && input[x] != ':') {
+                    is_third_button = false;
+                    timeB1 = 0;
+                    timeB2 = 0;
+                    timeB3 = 0;
+                    break;
+                } else {
+                    is_third_button = true;
+                    x = x + 1;
+                }
             }
 
-            timeB1 = atoi(ctimeB1);
-            timeB2 = atoi(ctimeB2);
-            timeB3 = atoi(ctimeB3);
+
+            if (is_third_button) {
+                input[strcspn(input, "\n")] = 0;
+                char *ctimeB1 = strtok(input, ":");
+                char *ctimeB2 = strtok(NULL, ":");
+                char *ctimeB3 = strtok(NULL, ":");
+
+                if (ctimeB1 == NULL || ctimeB2 == NULL || ctimeB3 == NULL) {
+                    ctimeB1 = "0";
+                    ctimeB2 = "0";
+                    ctimeB3 = "0";
+                }
+
+                timeB1 = atoi(ctimeB1);
+                timeB2 = atoi(ctimeB2);
+                timeB3 = atoi(ctimeB3);
+
+                if (timeB1 <= 23 && timeB2 <= 59 && timeB3 <= 59) {
+                    is_third_button = true;
+                }else {
+                    is_third_button = false;
+                    timeB1 = 0;
+                    timeB2 = 0;
+                    timeB3 = 0;
+                }
+            } else {
+                is_third_button = false;
+            }
 
             clear();
             position = 2;
@@ -396,41 +481,63 @@ int main() {
         //4 - Enter data B
         if ((position == 3 && n_button == 10) || n_button == 52) {
             clear();
-            otobrazh = false;
 
             printw("%s", "Введите дату Б (Д.М.Г (01.01.2020)): ");
 
-            otobrazh = true;
 
-            bool isNumber2 = true;
-            isdigit_check_number2 = true;
-            take_number2 = true;
             char input[100];
-
+            int x = 0;
 
             scanw("%s",input, sizeof(input), stdin);
-            input[strcspn(input, "\n")] = 0;
 
-            char *cdataB1 = strtok(input, ".");
-            char *cdataB2 = strtok(NULL, ".");
-            char *cdataB3 = strtok(NULL, ".");
-
-            if (cdataB1 == NULL || cdataB2 == NULL || cdataB3 == NULL) {
-                cdataB1 = "0";
-                cdataB2 = "0";
-                cdataB3 = "0";
+            while (input[x] != '\0') {
+                if (!isdigit(input[x]) && input[x] != '.') {
+                    is_third_button = false;
+                    dataB1 = 0;
+                    dataB2 = 0;
+                    dataB3 = 0;
+                    break;
+                } else {
+                    is_third_button = true;
+                    x = x + 1;
+                }
             }
 
-            dataB1 = atoi(cdataB1);
-            dataB2 = atoi(cdataB2);
-            dataB3 = atoi(cdataB3);
+
+            if (is_third_button) {
+                input[strcspn(input, "\n")] = 0;
+                char *cdataB1 = strtok(input, ".");
+                char *cdataB2 = strtok(NULL, ".");
+                char *cdataB3 = strtok(NULL, ".");
+
+                if (cdataB1 == NULL || cdataB2 == NULL || cdataB3 == NULL) {
+                    cdataB1 = "0";
+                    cdataB2 = "0";
+                    cdataB3 = "0";
+                }
+
+                dataB1 = atoi(cdataB1);
+                dataB2 = atoi(cdataB2);
+                dataB3 = atoi(cdataB3);
+
+                if (dataB1 <= 31 && dataB2 <= 12 && (1930<=dataB3 && dataB3 <= 2300)) {
+                    is_third_button = true;
+                }else {
+                    is_third_button = false;
+                    dataB1 = 0;
+                    dataB2 = 0;
+                    dataB3 = 0;
+                }
+            } else {
+                is_third_button = false;
+            }
 
             clear();
             position = 3;
             Calc(position);
         }
 
-////////////////
+////
 
         //5 - Rez 1-4p
         if ((position == 4 && n_button == 10) || n_button == 53) {
@@ -464,6 +571,12 @@ int main() {
             printw("%s", "Введите сколько дней вы хотите добавить к первой дате: ");
             scanw("%d",&plus_data);
 
+            if (1<=plus_data && plus_data<=10000) {
+                is_6p_normal = true;
+            }else {
+                is_6p_normal = false;
+                plus_data = 0;
+            }
             clear();
             position = 5;
             Calc(position);
@@ -491,30 +604,48 @@ int main() {
         //8 - + to 1 time
         if ((position == 7 && n_button == 10) || n_button == 56) {
             clear();
-            otobrazh = false;
 
             printw("%s", "Введите сколько прибавить к 1 времени (Ч:М:С): ");
 
-            otobrazh = true;
 
             char input[100];
+            int x = 0;
 
             scanw("%s",input, sizeof(input), stdin);
-            input[strcspn(input, "\n")] = 0;
 
-            char *cplus_time1 = strtok(input, ":");
-            char *cplus_time2 = strtok(NULL, ":");
-            char *cplus_time3 = strtok(NULL, ":");
-
-            if (cplus_time1 == NULL || cplus_time2 == NULL || cplus_time3 == NULL) {
-                cplus_time1 = "0";
-                cplus_time2 = "0";
-                cplus_time3 = "0";
+            while (input[x] != '\0') {
+                if (!isdigit(input[x]) && input[x] != ':') {
+                    is_8p_normal = false;
+                    plus_time_h = 0;
+                    plus_time_m = 0;
+                    plus_time_s = 0;
+                    break;
+                } else {
+                    is_8p_normal = true;
+                    x = x + 1;
+                }
             }
 
-            plus_time_h = atoi(cplus_time1);
-            plus_time_m = atoi(cplus_time2);
-            plus_time_s = atoi(cplus_time3);
+            if (is_8p_normal) {
+                input[strcspn(input, "\n")] = 0;
+                char *cplus_time1 = strtok(input, ":");
+                char *cplus_time2 = strtok(NULL, ":");
+                char *cplus_time3 = strtok(NULL, ":");
+
+                if (cplus_time1 == NULL || cplus_time2 == NULL || cplus_time3 == NULL) {
+                    cplus_time1 = "0";
+                    cplus_time2 = "0";
+                    cplus_time3 = "0";
+                }
+
+                plus_time_h = atoi(cplus_time1);
+                plus_time_m = atoi(cplus_time2);
+                plus_time_s = atoi(cplus_time3);
+
+            } else {
+                is_8p_normal = false;
+            }
+
 
             clear();
             position = 7;
@@ -547,7 +678,6 @@ int main() {
         if (position == 9 && n_button == 10) {
             clear();
             position = 9;
-            otobrazh = false;
             printw("%s", "Calendar by Tikhanov Oleg\n");
             printw("%s", "ver 0.1\n");
             printw("%s", "\n");
