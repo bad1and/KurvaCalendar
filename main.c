@@ -65,7 +65,7 @@ void Calc() {
             printw("%s", "В время Б вы ввели что-то не то!\n");
         }
         if (i == 11 && is_foth_button == false) {
-            printw("%s", "В дату А вы ввели что-то не то!\n");
+            printw("%s", "В дату Б вы ввели что-то не то!\n");
         }
         if (i == 11 && is_6p_normal == false) {
             printw("%s", "Добавленные числа доп даты какие-то не такие!\n");
@@ -260,6 +260,10 @@ void calculate_date_difference_to_6step(int *day, int *month, int *year, int day
         }
     }
     printw("Новая дата: %02d.%02d.%02d\n\n", *day, *month, *year);
+    char *days_of_week[] = {"Суббота", "Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница"};
+
+    int dow3 = get_day_of_week(*day, *month, *year);
+    printw("День недели новой даты: %s\n", days_of_week[dow3]);
 }
 
 
@@ -492,19 +496,19 @@ int main() {
 
             while (input[x] != '\0') {
                 if (!isdigit(input[x]) && input[x] != '.') {
-                    is_third_button = false;
+                    is_foth_button = false;
                     dataB1 = 0;
                     dataB2 = 0;
                     dataB3 = 0;
                     break;
                 } else {
-                    is_third_button = true;
+                    is_foth_button = true;
                     x = x + 1;
                 }
             }
 
 
-            if (is_third_button) {
+            if (is_foth_button) {
                 input[strcspn(input, "\n")] = 0;
                 char *cdataB1 = strtok(input, ".");
                 char *cdataB2 = strtok(NULL, ".");
@@ -521,15 +525,15 @@ int main() {
                 dataB3 = atoi(cdataB3);
 
                 if (dataB1 <= 31 && dataB2 <= 12 && (1930<=dataB3 && dataB3 <= 2300)) {
-                    is_third_button = true;
+                    is_foth_button = true;
                 }else {
-                    is_third_button = false;
+                    is_foth_button = false;
                     dataB1 = 0;
                     dataB2 = 0;
                     dataB3 = 0;
                 }
             } else {
-                is_third_button = false;
+                is_foth_button = false;
             }
 
             clear();
@@ -543,17 +547,24 @@ int main() {
         if ((position == 4 && n_button == 10) || n_button == 53) {
             clear();
 
+            printw("Первая дата: %02d.%02d.%02d\n",dataA1,dataA2,dataA3);
+            printw("Вторая дата: %02d.%02d.%02d\n\n",dataB1,dataB2,dataB3);
+
+            char *days_of_week[] = {"Суббота", "Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница"};
+            int dow1 = get_day_of_week(dataA1, dataA2, dataA3);
+            int dow2 = get_day_of_week(dataB1, dataB2, dataB3);
+
+
+
+            printw("День недели первой даты: %s\n", days_of_week[dow1]);
+            printw("День недели второй даты: %s\n\n", days_of_week[dow2]);
+
             // Рассчет разницы между датами
             calculate_date_difference(dataA1, dataA2, dataA3, timeA1, timeA2, timeA3,
                                       dataB1, dataB2, dataB3, timeB1, timeB2, timeB3);
 
             // Определение дня недели для первой и второй даты
-            char *days_of_week[] = {"Суббота", "Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница"};
-            int dow1 = get_day_of_week(dataA1, dataA2, dataA3);
-            int dow2 = get_day_of_week(dataB1, dataB2, dataB3);
 
-            printw("День недели первой даты: %s\n", days_of_week[dow1]);
-            printw("День недели второй даты: %s\n\n", days_of_week[dow2]);
             printw("%s", "Для выхода в главное меню нажмите любую кнопку...\n");
             n_button = getch();
             if (n_button != 27) {
@@ -582,7 +593,7 @@ int main() {
             Calc(position);
         }
 
-        //7 - rez p6
+        //7 - rez p6 !!!
         if ((position == 6 && n_button == 10) || n_button == 55) {
             clear();
 

@@ -1,63 +1,61 @@
 #include <stdio.h>
+#include <termios.h>
+#include <unistd.h>
+#include <stdlib.h>
 
-// Структура для хранения даты
-struct Date {
-    int day;
-    int month;
-    int year;
-};
-
-// Функция для проверки високосного года
-int is_leap_year(int year) {
-    if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) {
-        return 1;
-    }
-    return 0;
-}
-
-// Функция для определения количества дней в месяце
-int days_in_month(int month, int year) {
-    int days_in_month[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-    if (month == 2 && is_leap_year(year)) {
-        return 29; // Февраль в високосный год
-    }
-    return days_in_month[month - 1];
-}
-
-
-// Функция для добавления дней к дате
-void calculate_date_difference_to_6step(int *day, int *month, int *year, int daysToAdd) {
-    while (daysToAdd > 0) {
-        int daysInCurrentMonth = days_in_month(*month, *year);
-
-        // Если оставшихся дней больше, чем осталось в текущем месяце
-        if (daysToAdd + *day > daysInCurrentMonth) {
-            daysToAdd -= (daysInCurrentMonth - *day + 1);
-            *day = 1;
-            (*month)++;
-
-            // Переход на следующий год
-            if (*month > 12) {
-                *month = 1;
-                (*year)++;
-            }
-        } else {
-            *day += daysToAdd;
-            daysToAdd = 0;
-        }
-    }
-    printf("Новая дата: %02d.%02d.%d\n", *day, *month, *year);
+char getchh() {
+    struct termios oldt, newt;
+    char ch;
+    tcgetattr(STDIN_FILENO, &oldt);           // настройки терминала
+    newt = oldt;
+    newt.c_lflag &= ~(ICANON | ECHO);         // выкл отображение символов
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);  // применение изменений в newt
+    ch = getchar();
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);  // возврат настроек
+    return ch;
 }
 
 int main() {
-    // Входные переменные
-    int dataA1 = 12;  // День
-    int dataA2 = 12;  // Месяц
-    int dataA3 = 2023;  // Год
-    int plus_data = 100;  // Количество дней для добавления
+    char time[9];
+    int index = 0;
 
-    // Добавляем дни к дате
-    calculate_date_difference_to_6step(&dataA1, &dataA2, &dataA3, plus_data);
+    printf("Введите время в формате HHMMSS: ");
 
+
+    while (index < 6) {
+        char ch = getchh();  // получение
+        if (ch >= '0' && ch <= '9') {
+            if (index == 2 || index == 4) {
+                printf(":");
+            }
+            printf("%c", ch);
+            time[index] = ch;  // сохранениее цифры в память
+            index++;
+        }
+    }
+
+    time[6] = '\0';
+
+
+    char hours[3], minutes[3], seconds[3];
+
+
+    hours[0] = time[0];
+    hours[1] = time[1];
+    hours[2] = '\0';
+
+    minutes[0] = time[2];
+    minutes[1] = time[3];
+    minutes[2] = '\0';
+
+    seconds[0] = time[4];
+    seconds[1] = time[5];
+    seconds[2] = '\0';
+
+    int h = atoi(hours);
+    int m = atoi(minutes);
+    int s = atoi(seconds);
+
+    printf("\nЧасы: %d, Минуты: %d, Секунды: %d\n", h, m, s);
     return 0;
 }
