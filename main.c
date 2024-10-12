@@ -26,7 +26,7 @@ bool is_first_button = true,is_second_button= true, is_third_button= true, is_fo
 void Calc() {
 
     printw("%s", "Calendar by Tikhanov Oleg\n");
-    printw("%s", "ver 0.1\n");
+    printw("%s", "ver 1.0\n");
     printw("%s", "\n");
     printw("%s", "Перед использованием прочитайте инструкцию 10 п.\n");
     printw("%s", "-----------------\n");
@@ -690,11 +690,12 @@ int main() {
             clear();
             position = 9;
             printw("%s", "Calendar by Tikhanov Oleg\n");
-            printw("%s", "ver 0.1\n");
+            printw("%s", "ver 1.0\n");
             printw("%s", "\n");
             printw("%s", "https://github.com/bad1and/KurvaCalendar\n");
             printw("%s", "\n");
-            printw("%s", "Tyt budet instruction...)\n");
+            printw("%s", "Калькулятор поддерживает годы с 1930 по 2300\n");
+            printw("%s", "Калькулятор поддерживает прибавление от 1 до 10000 дней\n");
             n_button = getch();
             if (n_button != 27) {
                 clear();

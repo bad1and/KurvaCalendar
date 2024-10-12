@@ -49,8 +49,8 @@ cmake_ninja_workdir = /Users/oleg/myfiles/ЛЭТИ/Прога/Лабы/KurvaCale
 
 build cmake_object_order_depends_target_KurvaCalendar: phony || .
 
-build CMakeFiles/KurvaCalendar.dir/test.c.o: C_COMPILER__KurvaCalendar_unscanned_Debug /Users/oleg/myfiles/ЛЭТИ/Прога/Лабы/KurvaCalendar/test.c || cmake_object_order_depends_target_KurvaCalendar
-  DEP_FILE = CMakeFiles/KurvaCalendar.dir/test.c.o.d
+build CMakeFiles/KurvaCalendar.dir/main.c.o: C_COMPILER__KurvaCalendar_unscanned_Debug /Users/oleg/myfiles/ЛЭТИ/Прога/Лабы/KurvaCalendar/main.c || cmake_object_order_depends_target_KurvaCalendar
+  DEP_FILE = CMakeFiles/KurvaCalendar.dir/main.c.o.d
   FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.0.sdk -fcolor-diagnostics
   OBJECT_DIR = CMakeFiles/KurvaCalendar.dir
   OBJECT_FILE_DIR = CMakeFiles/KurvaCalendar.dir
@@ -63,7 +63,7 @@ build CMakeFiles/KurvaCalendar.dir/test.c.o: C_COMPILER__KurvaCalendar_unscanned
 #############################################
 # Link the executable KurvaCalendar
 
-build KurvaCalendar: C_EXECUTABLE_LINKER__KurvaCalendar_Debug CMakeFiles/KurvaCalendar.dir/test.c.o | /Library/Developer/CommandLineTools/SDKs/MacOSX15.0.sdk/usr/lib/libcurses.tbd /Library/Developer/CommandLineTools/SDKs/MacOSX15.0.sdk/usr/lib/libform.tbd
+build KurvaCalendar: C_EXECUTABLE_LINKER__KurvaCalendar_Debug CMakeFiles/KurvaCalendar.dir/main.c.o | /Library/Developer/CommandLineTools/SDKs/MacOSX15.0.sdk/usr/lib/libcurses.tbd /Library/Developer/CommandLineTools/SDKs/MacOSX15.0.sdk/usr/lib/libform.tbd
   FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.0.sdk
   LINK_LIBRARIES = /Library/Developer/CommandLineTools/SDKs/MacOSX15.0.sdk/usr/lib/libcurses.tbd  /Library/Developer/CommandLineTools/SDKs/MacOSX15.0.sdk/usr/lib/libform.tbd
   OBJECT_DIR = CMakeFiles/KurvaCalendar.dir
